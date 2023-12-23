@@ -232,7 +232,8 @@ sequence:
   # FINALLY the actual call to say the message
   - service: "{{ tts_engine }}"
     data:
-      entity_id: "{{ entity_group_leader }}"
+      cache: true
+      media_player_entity_id: "{{ entity_group_leader }}"
       message: "{{ message }}"
       language: "{{ tts_language }}"
 
