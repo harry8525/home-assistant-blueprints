@@ -41,8 +41,8 @@ blueprint:
       selector:
         text:
     tts_entity:
-      name: Entity
-      description: The language to use with the text-to-speech service.
+      name: TTS Entity
+      description: The entity to use with the text-to-speech service.
       default: "google_en_com"
       selector:
         text:
@@ -162,11 +162,11 @@ variables:
     {%- else -%}
       {{ lang_hack }}
     {%- endif -%}
-  # 2) putting language into a variable to verify values and provide default
+  # 3) putting entity into a variable to verify values and provide default
   tts_entity_hack: !input tts_entity
   tts_entity: >-
     {%- if tts_entity_hack is undefined or tts_entity_hack== None or tts_entity_hack == "" -%}
-      "tts.google_en_com"
+      tts.google_en_com
     {%- else -%}
       tts.{{ tts_entity_hack }}
     {%- endif -%}
@@ -251,7 +251,7 @@ sequence:
       message: "{{ message }}"
       language: "{{ tts_language }}"
     target:
-      entity_id: {{ tts_entity }}
+      entity_id: "{{ tts_entity }}"
 
   # not sure why, but setting the repeat doesn't always properly take
   # I can see it changing in the state  when the TTY goes the repeat
