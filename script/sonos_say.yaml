@@ -31,13 +31,19 @@ blueprint:
       description:
         The text-to-speech service to use when saying the message. This must match your Home
         Assistant configuration.
-      default: "google_translate_say"
+      default: "speak"
       selector:
         text:
     tts_language:
       name: Language
       description: The language to use with the text-to-speech service.
       default: "en"
+      selector:
+        text:
+    tts_entity:
+      name: Entity
+      description: The language to use with the text-to-speech service.
+      default: "google_en_com"
       selector:
         text:
 
@@ -156,6 +162,14 @@ variables:
     {%- else -%}
       {{ lang_hack }}
     {%- endif -%}
+  # 2) putting language into a variable to verify values and provide default
+  tts_entity_hack: !input tts_entity
+  tts_entity: >-
+    {%- if tts_entity_hack is undefined or tts_entity_hack== None or tts_entity_hack == "" -%}
+      "tts.google_en_com"
+    {%- else -%}
+      tts.{{ tts_entity_hack }}
+    {%- endif -%}
   # the state delay is used for forcing a wait after key state changes
   # since the Sonos integration seems to report state too early which can cause
   # audio being cut-off or volume changes being heard that shouldn't be.
@@ -236,6 +250,8 @@ sequence:
       media_player_entity_id: "{{ entity_group_leader }}"
       message: "{{ message }}"
       language: "{{ tts_language }}"
+    target:
+      entity_id: {{ tts_entity }}
 
   # not sure why, but setting the repeat doesn't always properly take
   # I can see it changing in the state  when the TTY goes the repeat
